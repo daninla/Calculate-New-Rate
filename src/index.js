@@ -2,11 +2,10 @@
 
 /**
  *
- * @param {number} winner - Current rating of the winner
- * @param {number} loser  - Current rating of the loser
- * @returns {number} New rating of the winner rounded to 1 decimal place,
+ * @param {number} winner - current rating of the winner
+ * @param {number} loser - current rating of the loser
+ * @returns {number} new rating of the winner
  */
-
 function calculateNewRate(winner, loser) {
   if (
     typeof winner !== "number" ||
@@ -14,43 +13,24 @@ function calculateNewRate(winner, loser) {
     winner < 0 ||
     loser < 0
   ) {
+    console.log("Invalid input: ratings must be non-negative numbers");
     return NaN;
   }
 
   if (winner === 0) return loser;
   if (loser === 0) return winner;
 
-  const increment =
-    loser < winner
-      ? smallRatingDetermination(winner, loser)
-      : bigRatingDetermination(winner, loser);
+  let increment = 0;
+
+  if (loser <= winner) {
+    const diff = winner - loser;
+
+    if (diff <= 2) increment = 2;
+    else if (diff < 20) increment = 1;
+    else increment = 0;
+  } else {
+    increment = (loser - winner + 5) / 3;
+  }
 
   return Number((winner + increment).toFixed(1));
 }
-
-/**
- *
- * @param {number} winner
- * @param {number} loser
- * @returns {number}
- */
-const smallRatingDetermination = (winner, loser) => {
-  const diff = winner - loser;
-  if (diff <= 2) return 2;
-  if (diff < 20) return 1;
-  return 0;
-};
-
-/**
- *
- * @param {number} winner
- * @param {number} loser
- * @returns {number}
- */
-const bigRatingDetermination = (winner, loser) => {
-  return (loser - winner + 5) / 3;
-};
-
-console.log(calculateNewRate(10, 10));
-console.log(calculateNewRate(130, 10));
-console.log(calculateNewRate(30, 0));
